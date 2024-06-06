@@ -1,4 +1,9 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:infopediaflutter/api/auth_api.dart';
+import 'package:infopediaflutter/api/base_response.dart';
+import 'package:infopediaflutter/api/login_response.dart';
 
 class LoginPage extends StatelessWidget {
   const LoginPage({super.key});
@@ -46,10 +51,54 @@ class FormLogin extends StatefulWidget {
 class _FormLoginState extends State<FormLogin> {
   final _formKey = GlobalKey<FormState>();
   bool _obscureText = true;
-  final bool _isLoading = false;
+  bool _isLoading = false;
 
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+
+  final AuthAPI _authAPI = AuthAPI();
+
+  Future<void> _login() async {
+    if (!_formKey.currentState!.validate()) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please fill input')),
+      );
+      return;
+    }
+
+    setState(() => _isLoading = true);
+
+    try {
+      var res = await _authAPI.login(
+        _emailController.text,
+        _passwordController.text,
+      );
+      var body = jsonDecode(res.body);
+
+      var parsed = BaseResponse.fromJson(body);
+      if (res.statusCode == 200 && parsed.success) {
+        var data = LoginResponse.fromJson(parsed.data);
+        _authAPI.setToken(data.token);
+        if (mounted) {
+          Navigator.popAndPushNamed(context, "/home");
+        }
+      } else {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(parsed.message)),
+          );
+        }
+      }
+      setState(() => _isLoading = false);
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(e.toString())),
+        );
+      }
+      setState(() => _isLoading = false);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -127,7 +176,7 @@ class _FormLoginState extends State<FormLogin> {
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: _isLoading ? null : () {},
+                  onPressed: _isLoading ? null : _login,
                   child: _isLoading
                       ? const SizedBox(
                           height: 16,

@@ -5,7 +5,7 @@ import 'package:infopediaflutter/pages/register_view.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(const MainApp(initialRoute: '/home'));
+  runApp(const MainApp(initialRoute: '/login'));
 }
 
 class MainApp extends StatelessWidget {
