@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class RegisterPage extends StatelessWidget {
-  const RegisterPage({Key? key}) : super(key: key);
+  const RegisterPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +38,7 @@ class RegisterPage extends StatelessWidget {
 }
 
 class FormRegister extends StatefulWidget {
-  const FormRegister({Key? key}) : super(key: key);
+  const FormRegister({super.key});
 
   @override
   State<FormRegister> createState() => _FormRegisterState();
@@ -47,8 +47,7 @@ class FormRegister extends StatefulWidget {
 class _FormRegisterState extends State<FormRegister> {
   final _formKey = GlobalKey<FormState>();
   bool _obscureText = true;
-  bool _isLoading = false;
-
+  final bool _isLoading = false;
 
   final TextEditingController _namaController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
