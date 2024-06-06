@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:infopediaflutter/pages/home_view.dart';
 import 'package:infopediaflutter/pages/login_view.dart';
 import 'package:infopediaflutter/pages/register_view.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(MainApp(initialRoute:'/home'));
+  runApp(const MainApp(initialRoute: '/home'));
 }
 
 class MainApp extends StatelessWidget {

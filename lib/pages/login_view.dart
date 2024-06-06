@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class LoginPage extends StatelessWidget {
-  const LoginPage({Key? key}) : super(key: key);
+  const LoginPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +37,7 @@ class LoginPage extends StatelessWidget {
 }
 
 class FormLogin extends StatefulWidget {
-  const FormLogin({Key? key}) : super(key: key);
+  const FormLogin({super.key});
 
   @override
   State<FormLogin> createState() => _FormLoginState();
@@ -46,12 +46,10 @@ class FormLogin extends StatefulWidget {
 class _FormLoginState extends State<FormLogin> {
   final _formKey = GlobalKey<FormState>();
   bool _obscureText = true;
-  bool _isLoading = false;
+  final bool _isLoading = false;
 
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-
-  
 
   @override
   Widget build(BuildContext context) {
