@@ -5,6 +5,8 @@ import 'package:infopediaflutter/api/auth_api.dart';
 import 'package:infopediaflutter/api/base_response.dart';
 import 'package:infopediaflutter/api/login_response.dart';
 
+import '../api/sp.dart';
+
 class LoginPage extends StatelessWidget {
   const LoginPage({super.key});
 
@@ -78,9 +80,9 @@ class _FormLoginState extends State<FormLogin> {
       var parsed = BaseResponse.fromJson(body);
       if (res.statusCode == 200 && parsed.success) {
         var data = LoginResponse.fromJson(parsed.data);
-        _authAPI.setToken(data.token);
+        setToken(data.token);
         if (mounted) {
-          Navigator.popAndPushNamed(context, "/home");
+          Navigator.of(context).pushReplacementNamed('/home');
         }
       } else {
         if (mounted) {

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:infopediaflutter/api/sp.dart';
 import 'package:infopediaflutter/models/article.dart';
 import 'package:infopediaflutter/pages/article_detail_view.dart';
 
@@ -53,6 +54,16 @@ class _NewsHomePageState extends State<NewsHomePage> {
             Text("infopedia", style: TextStyle(color: Colors.black)),
           ],
         ),
+        actions: [
+          IconButton(
+            onPressed: () {
+              setToken("");
+              Navigator.of(context, rootNavigator: true)
+                  .pushReplacementNamed('/login');
+            },
+            icon: const Icon(Icons.logout),
+          ),
+        ],
       ),
       body: ListView.builder(
         itemCount: articles.length,

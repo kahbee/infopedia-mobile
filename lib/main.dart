@@ -1,11 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:infopediaflutter/api/sp.dart';
 import 'package:infopediaflutter/pages/home_view.dart';
 import 'package:infopediaflutter/pages/login_view.dart';
 import 'package:infopediaflutter/pages/register_view.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(const MainApp(initialRoute: '/login'));
+  var initialRoute = '/login';
+  var token = await getToken();
+  if (token != "") {
+    initialRoute = '/home';
+  }
+  runApp(MainApp(initialRoute: initialRoute));
 }
 
 class MainApp extends StatelessWidget {
@@ -22,9 +28,6 @@ class MainApp extends StatelessWidget {
         '/login': (context) => const LoginPage(),
         '/register': (context) => const RegisterPage(),
         '/home': (context) => const HomePage(),
-      },
-      builder: (context, child) {
-        return child!;
       },
     );
   }
