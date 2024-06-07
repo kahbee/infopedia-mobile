@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:infopediaflutter/api/sp.dart';
-import 'package:infopediaflutter/models/article.dart';
+import 'package:infopediaflutter/api/base_api.dart';
+// import 'package:infopediaflutter/models/article.dart';
 import 'package:infopediaflutter/pages/article_detail_view.dart';
+
+import 'package:infopediaflutter/models/news.dart';
+import 'package:infopediaflutter/api/news_api.dart';
+
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -21,28 +25,34 @@ class NewsHomePage extends StatefulWidget {
 }
 
 class _NewsHomePageState extends State<NewsHomePage> {
-  final List<Article> articles = [
-    Article(
-      title: 'Sample News Title 1',
-      imageUrl: 'https://picsum.photos/300/200',
-    ),
-    Article(
-      title: 'Sample News Title 2',
-      imageUrl: 'https://picsum.photos/300/200',
-    ),
-    Article(
-      title: 'Sample News Title 3',
-      imageUrl: 'https://picsum.photos/300/200',
-    ),
-    Article(
-      title: 'Sample News Title 4',
-      imageUrl: 'https://picsum.photos/300/200',
-    ),
-    Article(
-      title: 'Sample News Title 5',
-      imageUrl: 'https://picsum.photos/300/200',
-    ),
-  ];
+  late Future<List<News>> futureNews;
+  // final List<Article> articles = [
+  //   Article(
+  //     title: 'Sample News Title 1',
+  //     imageUrl: 'https://picsum.photos/300/200',
+  //   ),
+  //   Article(
+  //     title: 'Sample News Title 2',
+  //     imageUrl: 'https://picsum.photos/300/200',
+  //   ),
+  //   Article(
+  //     title: 'Sample News Title 3',
+  //     imageUrl: 'https://picsum.photos/300/200',
+  //   ),
+  //   Article(
+  //     title: 'Sample News Title 4',
+  //     imageUrl: 'https://picsum.photos/300/200',
+  //   ),
+  //   Article(
+  //     title: 'Sample News Title 5',
+  //     imageUrl: 'https://picsum.photos/300/200',
+  //   ),
+  // ];
+  @override
+  void initState() {
+    super.initState();
+    futureNews = NewsAPI().fetchNews();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -54,47 +64,50 @@ class _NewsHomePageState extends State<NewsHomePage> {
             Text("infopedia", style: TextStyle(color: Colors.black)),
           ],
         ),
-        actions: [
-          IconButton(
-            onPressed: () {
-              setToken("");
-              Navigator.of(context, rootNavigator: true)
-                  .pushReplacementNamed('/login');
-            },
-            icon: const Icon(Icons.logout),
-          ),
-        ],
       ),
-      body: ListView.builder(
-        itemCount: articles.length,
-        itemBuilder: (context, index) {
-          Article article = articles[index];
-          return InkWell(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => ArticleDetailPage(article: article),
-                ),
-              );
-            },
-            child: Padding(
-              padding: const EdgeInsets.symmetric(
-                vertical: 8.0,
-              ),
-              child: Column(
-                children: [
-                  Image.network(
-                    article.imageUrl,
-                    width: double.infinity,
-                    height: 200,
-                    fit: BoxFit.cover,
+      body: FutureBuilder<List<News>>(
+        future: futureNews,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            return const Center(child: Text('No news available'));
+          } else {
+            return ListView.builder(
+              itemCount: snapshot.data!.length,
+              itemBuilder: (context, index) {
+                News article = snapshot.data![index];
+                return InkWell(
+                  // onTap: () {
+                  //   Navigator.push(
+                  //     context,
+                  //     MaterialPageRoute(
+                  //       builder: (context) => ArticleDetailPage(article: article),
+                  //     ),
+                  //   );
+                  // },
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 8.0,
+                    ),
+                    child: Column(
+                      children: [
+                        Image.network(
+                          BaseAPI.url + "storage/" + article.image,
+                          width: double.infinity,
+                          height: 200,
+                          fit: BoxFit.cover,
+                        ),
+                        Text(article.title)
+                      ],
+                    ),
                   ),
-                  Text(article.title)
-                ],
-              ),
-            ),
-          );
+                );
+              },
+            );
+          }
         },
       ),
     );

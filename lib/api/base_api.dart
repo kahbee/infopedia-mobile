@@ -1,7 +1,8 @@
 import 'package:infopediaflutter/api/sp.dart';
 
 class BaseAPI {
-  String baseUrl = "http://192.168.1.6:8000/api";
+  static String url = "http://192.168.1.3:8000/";
+  String baseUrl = "${url}api";
   Map<String, String> headers = {
     "Content-Type": "application/json; charset=UTF-8"
   };
