@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_image/flutter_image.dart';
 import 'package:infopediaflutter/api/base_api.dart';
-// import 'package:infopediaflutter/models/article.dart';
 import 'package:infopediaflutter/pages/article_detail_view.dart';
-
 import 'package:infopediaflutter/models/news.dart';
 import 'package:infopediaflutter/api/news_api.dart';
-
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -26,28 +24,6 @@ class NewsHomePage extends StatefulWidget {
 
 class _NewsHomePageState extends State<NewsHomePage> {
   late Future<List<News>> futureNews;
-  // final List<Article> articles = [
-  //   Article(
-  //     title: 'Sample News Title 1',
-  //     imageUrl: 'https://picsum.photos/300/200',
-  //   ),
-  //   Article(
-  //     title: 'Sample News Title 2',
-  //     imageUrl: 'https://picsum.photos/300/200',
-  //   ),
-  //   Article(
-  //     title: 'Sample News Title 3',
-  //     imageUrl: 'https://picsum.photos/300/200',
-  //   ),
-  //   Article(
-  //     title: 'Sample News Title 4',
-  //     imageUrl: 'https://picsum.photos/300/200',
-  //   ),
-  //   Article(
-  //     title: 'Sample News Title 5',
-  //     imageUrl: 'https://picsum.photos/300/200',
-  //   ),
-  // ];
   @override
   void initState() {
     super.initState();
@@ -78,29 +54,30 @@ class _NewsHomePageState extends State<NewsHomePage> {
             return ListView.builder(
               itemCount: snapshot.data!.length,
               itemBuilder: (context, index) {
-                News article = snapshot.data![index];
+                News news = snapshot.data![index];
                 return InkWell(
-                  // onTap: () {
-                  //   Navigator.push(
-                  //     context,
-                  //     MaterialPageRoute(
-                  //       builder: (context) => ArticleDetailPage(article: article),
-                  //     ),
-                  //   );
-                  // },
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ArticleDetailPage(news: news),
+                      ),
+                    );
+                  },
                   child: Padding(
                     padding: const EdgeInsets.symmetric(
                       vertical: 8.0,
                     ),
                     child: Column(
                       children: [
-                        Image.network(
-                          BaseAPI.url + "storage/" + article.image,
+                        Image(
+                          image: NetworkImageWithRetry(
+                              "${BaseAPI.url}storage/${news.image}"),
                           width: double.infinity,
                           height: 200,
                           fit: BoxFit.cover,
                         ),
-                        Text(article.title)
+                        Text(news.title)
                       ],
                     ),
                   ),

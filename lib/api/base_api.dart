@@ -10,7 +10,7 @@ class BaseAPI {
   Map<String, String> headersWithToken() {
     return {
       "Content-Type": "application/json; charset=UTF-8",
-      "Authorization": "Bearer $getToken()"
+      "Authorization": "Bearer ${getToken()}"
     };
   }
 }
