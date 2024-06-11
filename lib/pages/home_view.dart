@@ -6,6 +6,7 @@ import 'package:infopediaflutter/models/news.dart';
 import 'package:infopediaflutter/api/news_api.dart';
 import 'package:infopediaflutter/pages/search_view.dart';
 import '../api/sp.dart';
+import 'news_list_widget.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -67,51 +68,7 @@ class _NewsHomePageState extends State<NewsHomePage> {
           ],
         ),
       ),
-      body: FutureBuilder<List<News>>(
-        future: futureNews,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
-          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return const Center(child: Text('No news available'));
-          } else {
-            return ListView.builder(
-              itemCount: snapshot.data!.length,
-              itemBuilder: (context, index) {
-                News news = snapshot.data![index];
-                return InkWell(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => ArticleDetailPage(news: news),
-                      ),
-                    );
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 8.0,
-                    ),
-                    child: Column(
-                      children: [
-                        Image.network(
-                          "${BaseAPI.url}storage/${news.image}",
-                          width: double.infinity,
-                          height: 200,
-                          fit: BoxFit.cover,
-                        ),
-                        Text(news.title)
-                      ],
-                    ),
-                  ),
-                );
-              },
-            );
-          }
-        },
-      ),
+      body: NewsListWidget(futureNews: futureNews),
     );
   }
 }

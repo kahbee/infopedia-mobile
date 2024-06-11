@@ -73,7 +73,7 @@ class NewsAPI extends BaseAPI {
     final res = await http.post(
       Uri.parse('${super.baseUrl}/comments'),
       headers: await super.headersWithToken(),
-      body: jsonEncode({'content': content , 'news_id': id}),
+      body: jsonEncode({'content': content, 'news_id': id}),
     );
     var body = jsonDecode(res.body);
 
@@ -82,6 +82,24 @@ class NewsAPI extends BaseAPI {
       return true;
     } else {
       throw Exception('Failed to add comment');
+    }
+  }
+
+  Future<List<News>> searchNews(String query) async {
+    final res = await http.get(
+      Uri.parse('${super.baseUrl}/search').replace(queryParameters: {
+        'query': query,
+      }),
+      headers: await super.headersWithToken(),
+    );
+    var body = jsonDecode(res.body);
+
+    var parsed = BaseResponse.fromJson(body);
+    if (res.statusCode == 200 && parsed.success) {
+      List<dynamic> data = parsed.data;
+      return data.map((news) => News.fromJson(news)).toList();
+    } else {
+      throw Exception('Failed to load news');
     }
   }
 }
