@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:infopediaflutter/api/article_response.dart';
 import 'package:infopediaflutter/api/base_response.dart';
+import 'package:infopediaflutter/models/article.dart';
 import 'package:infopediaflutter/models/news.dart';
 import 'package:infopediaflutter/api/base_api.dart';
 
@@ -65,6 +66,22 @@ class NewsAPI extends BaseAPI {
       return true;
     } else {
       throw Exception('Failed to unbookmark news');
+    }
+  }
+
+  Future<bool> addComment(int id, String content) async {
+    final res = await http.post(
+      Uri.parse('${super.baseUrl}/comments'),
+      headers: await super.headersWithToken(),
+      body: jsonEncode({'content': content , 'news_id': id}),
+    );
+    var body = jsonDecode(res.body);
+
+    var parsed = BaseResponse.fromJson(body);
+    if (res.statusCode == 200 && parsed.success) {
+      return true;
+    } else {
+      throw Exception('Failed to add comment');
     }
   }
 }
