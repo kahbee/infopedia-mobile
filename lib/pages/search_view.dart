@@ -1,61 +1,91 @@
 import 'package:flutter/material.dart';
+import 'package:infopediaflutter/models/news.dart';
+import 'package:infopediaflutter/api/news_api.dart';
+import 'package:infopediaflutter/pages/news_list_widget.dart';
 
 class SearchView extends StatefulWidget {
-  const SearchView({super.key});
+  const SearchView({Key? key}) : super(key: key);
 
   @override
   State<SearchView> createState() => _SearchViewState();
 }
 
 class _SearchViewState extends State<SearchView> {
+  final TextEditingController _searchController = TextEditingController();
+  late Future<List<News>> futureNews;
+
+  @override
+  void initState() {
+    super.initState();
+    // Menginisialisasi futureNews dengan berita kosong
+    futureNews = Future.value([]);
+  }
+
+  void _search() async {
+    String query = _searchController.text;
+    if (query.isNotEmpty) {
+      futureNews = NewsAPI().searchNews(query);
+    } else {
+      // Menetapkan futureNews sebagai Future kosong jika query kosong
+      futureNews = Future.value([]);
+    }
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Cari Berita')),
+      appBar: AppBar(
+        title: const Text('Cari Berita'),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: SearchAnchor(
-          builder: (BuildContext context, SearchController controller) {
-            return SearchBar(
-              controller: controller,
-              padding: const MaterialStatePropertyAll<EdgeInsets>(
-                EdgeInsets.symmetric(horizontal: 16.0),
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: _searchController,
+                      onChanged: (value) {
+                        // Tidak perlu panggil _search saat teks berubah
+                        // _search();
+                      },
+                      decoration: const InputDecoration(
+                        labelText: 'Cari berita...',
+                        border: OutlineInputBorder(),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  IconButton(
+                    icon: const Icon(Icons.search),
+                    color: const Color.fromARGB(255, 61, 63, 65),
+                    onPressed: _search,
+                  ),
+                ],
               ),
-              onTap: () {
-                controller.openView();
-              },
-              onChanged: (_) {
-                controller.openView();
-              },
-              leading: const Icon(Icons.search),
-            );
-          },
-          suggestionsBuilder:
-              (BuildContext context, SearchController controller) {
-            final query = controller.text.toLowerCase();
-            // Here you should filter your news or articles based on the query
-            final List<String> filteredItems =
-                []; // Replace with your actual search logic
-
-            if (filteredItems.isEmpty) {
-              return [
-                const ListTile(
-                  title: Text('Hasil pencarian tidak ditemukan'),
-                ),
-              ];
-            } else {
-              return filteredItems.map((item) {
-                return ListTile(
-                  title: Text(item),
-                  onTap: () {
-                    setState(() {
-                      controller.closeView(item);
-                    });
-                  },
-                );
-              }).toList();
-            }
-          },
+            ),
+            Expanded(
+              child: FutureBuilder<List<News>>(
+                future: futureNews,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  } else if (snapshot.hasError) {
+                    return Center(child: Text('Error: ${snapshot.error}'));
+                  } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                    return const Center(
+                        child: Text('Berita tidak dapat ditemukan'));
+                  } else {
+                    return NewsListWidget(futureNews: futureNews);
+                  }
+                },
+              ),
+            ),
+          ],
         ),
       ),
     );
