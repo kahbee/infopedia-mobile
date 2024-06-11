@@ -102,4 +102,20 @@ class NewsAPI extends BaseAPI {
       throw Exception('Failed to load news');
     }
   }
+
+  Future<List<News>> fetchBookmarkedNews() async {
+    final res = await http.get(
+      Uri.parse('${super.baseUrl}/bookmark'),
+      headers: await super.headersWithToken(),
+    );
+    var body = jsonDecode(res.body);
+
+    var parsed = BaseResponse.fromJson(body);
+    if (res.statusCode == 200 && parsed.success) {
+      List<dynamic> data = parsed.data;
+      return data.map((news) => News.fromJson(news)).toList();
+    } else {
+      throw Exception('Failed to load news');
+    }
+  }
 }

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_image/flutter_image.dart';
+import 'package:flutter/widgets.dart';
 import 'package:infopediaflutter/api/article_response.dart';
 import 'package:infopediaflutter/models/article.dart';
 import 'package:infopediaflutter/models/news.dart';
@@ -81,29 +81,10 @@ class _ArticleDetailPageState extends State<ArticleDetailPage> {
                       height: 200,
                       fit: BoxFit.cover,
                     ),
-                    const SizedBox(height: 20),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            article.title,
-                            style: const TextStyle(fontSize: 24),
-                          ),
-                          ElevatedButton(
-                            onPressed: handleBookmark,
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor:
-                                  bookmarked ? Colors.blueGrey : Colors.blue,
-                              foregroundColor: Colors.white,
-                            ),
-                            child: bookmarked
-                                ? const Text('Unbookmark')
-                                : const Text('Bookmark'),
-                          ),
-                        ],
-                      ),
+                    const SizedBox(height: 10),
+                    Text(
+                      article.title,
+                      style: const TextStyle(fontSize: 24),
                     ),
                     const SizedBox(height: 10),
                     Text(
@@ -120,7 +101,23 @@ class _ArticleDetailPageState extends State<ArticleDetailPage> {
                         article.content,
                       ),
                     ),
-                    const Divider(height: 40),
+                    const Divider(height: 20),
+                    Container(
+                      padding: const EdgeInsets.all(8.0),
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: handleBookmark,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor:
+                              bookmarked ? Colors.blueGrey : Colors.blue,
+                          foregroundColor: Colors.white,
+                        ),
+                        child: bookmarked
+                            ? const Text('Unbookmark')
+                            : const Text('Bookmark'),
+                      ),
+                    ),
+                    const Divider(height: 20),
                     const Text(
                       'Comments',
                       style:
@@ -128,7 +125,7 @@ class _ArticleDetailPageState extends State<ArticleDetailPage> {
                     ),
                     ListView.builder(
                       shrinkWrap: true,
-                      physics: NeverScrollableScrollPhysics(),
+                      physics: const NeverScrollableScrollPhysics(),
                       itemCount: comments.length,
                       itemBuilder: (context, index) {
                         Comment comment = comments[index];
@@ -137,7 +134,8 @@ class _ArticleDetailPageState extends State<ArticleDetailPage> {
                           subtitle: Text(comment.content),
                           trailing: Text(
                             comment.createdAt.toString(),
-                            style: TextStyle(color: Colors.grey, fontSize: 12),
+                            style: const TextStyle(
+                                color: Colors.grey, fontSize: 12),
                           ),
                         );
                       },
