@@ -4,7 +4,7 @@ import 'package:infopediaflutter/api/base_api.dart';
 import 'package:infopediaflutter/pages/article_detail_view.dart';
 import 'package:infopediaflutter/models/news.dart';
 import 'package:infopediaflutter/api/news_api.dart';
-
+import 'package:infopediaflutter/pages/search_view.dart';
 import '../api/sp.dart';
 
 class HomePage extends StatelessWidget {
@@ -18,7 +18,7 @@ class HomePage extends StatelessWidget {
 }
 
 class NewsHomePage extends StatefulWidget {
-  const NewsHomePage({super.key});
+  const NewsHomePage({Key? key}) : super(key: key);
 
   @override
   State<NewsHomePage> createState() => _NewsHomePageState();
@@ -26,6 +26,7 @@ class NewsHomePage extends StatefulWidget {
 
 class _NewsHomePageState extends State<NewsHomePage> {
   late Future<List<News>> futureNews;
+
   @override
   void initState() {
     super.initState();
@@ -37,16 +38,31 @@ class _NewsHomePageState extends State<NewsHomePage> {
     return Scaffold(
       appBar: AppBar(
         title: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             const Text("infopedia", style: TextStyle(color: Colors.black)),
-            IconButton(
-              icon: const Icon(Icons.logout),
-              onPressed: () {
-                setToken("");
-                Navigator.of(context, rootNavigator: true)
-                    .pushReplacementNamed("/login");
-              },
+            Row(
+              children: [
+                IconButton(
+                  icon: const Icon(Icons.search),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const SearchView(),
+                      ),
+                    );
+                  },
+                ),
+                IconButton(
+                  icon: const Icon(Icons.logout),
+                  onPressed: () {
+                    setToken("");
+                    Navigator.of(context, rootNavigator: true)
+                        .pushReplacementNamed("/login");
+                  },
+                ),
+              ],
             ),
           ],
         ),

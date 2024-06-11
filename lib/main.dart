@@ -6,7 +6,7 @@ import 'package:infopediaflutter/pages/register_view.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  var initialRoute = '/login';
+  var initialRoute = '/home';
   var token = await getToken();
   if (token != "") {
     initialRoute = '/home';
