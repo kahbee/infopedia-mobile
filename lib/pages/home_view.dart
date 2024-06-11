@@ -5,6 +5,8 @@ import 'package:infopediaflutter/pages/article_detail_view.dart';
 import 'package:infopediaflutter/models/news.dart';
 import 'package:infopediaflutter/api/news_api.dart';
 
+import '../api/sp.dart';
+
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
   @override
@@ -34,10 +36,18 @@ class _NewsHomePageState extends State<NewsHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Row(
-          mainAxisAlignment: MainAxisAlignment.center,
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            Text("infopedia", style: TextStyle(color: Colors.black)),
+            const Text("infopedia", style: TextStyle(color: Colors.black)),
+            IconButton(
+              icon: const Icon(Icons.logout),
+              onPressed: () {
+                setToken("");
+                Navigator.of(context, rootNavigator: true)
+                    .pushReplacementNamed("/login");
+              },
+            ),
           ],
         ),
       ),
@@ -70,9 +80,8 @@ class _NewsHomePageState extends State<NewsHomePage> {
                     ),
                     child: Column(
                       children: [
-                        Image(
-                          image: NetworkImageWithRetry(
-                              "${BaseAPI.url}storage/${news.image}"),
+                        Image.network(
+                          "${BaseAPI.url}storage/${news.image}",
                           width: double.infinity,
                           height: 200,
                           fit: BoxFit.cover,

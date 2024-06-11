@@ -9,7 +9,7 @@ class NewsAPI extends BaseAPI {
   Future<List<News>> fetchNews() async {
     final res = await http.get(
       Uri.parse('${super.baseUrl}/news'),
-      headers: super.headersWithToken(),
+      headers: await super.headersWithToken(),
     );
     var body = jsonDecode(res.body);
 
@@ -25,7 +25,7 @@ class NewsAPI extends BaseAPI {
   Future<ArticleResponse> fetchNewsBySlug(String slug) async {
     final res = await http.get(
       Uri.parse('${super.baseUrl}/news/$slug'),
-      headers: super.headersWithToken(),
+      headers: await super.headersWithToken(),
     );
     var body = jsonDecode(res.body);
 
@@ -35,6 +35,36 @@ class NewsAPI extends BaseAPI {
       return data;
     } else {
       throw Exception('Failed to load news');
+    }
+  }
+
+  Future<bool> bookmarkNews(String slug) async {
+    final res = await http.post(
+      Uri.parse('${super.baseUrl}/news/$slug/bookmark'),
+      headers: await super.headersWithToken(),
+    );
+    var body = jsonDecode(res.body);
+
+    var parsed = BaseResponse.fromJson(body);
+    if (res.statusCode == 200 && parsed.success) {
+      return true;
+    } else {
+      throw Exception('Failed to bookmark news');
+    }
+  }
+
+  Future<bool> unbookmarkNews(String slug) async {
+    final res = await http.delete(
+      Uri.parse('${super.baseUrl}/news/$slug/bookmark'),
+      headers: await super.headersWithToken(),
+    );
+    var body = jsonDecode(res.body);
+
+    var parsed = BaseResponse.fromJson(body);
+    if (res.statusCode == 200 && parsed.success) {
+      return true;
+    } else {
+      throw Exception('Failed to unbookmark news');
     }
   }
 }

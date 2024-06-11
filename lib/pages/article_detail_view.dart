@@ -33,55 +33,84 @@ class _ArticleDetailPageState extends State<ArticleDetailPage> {
       ),
       body: Center(
         child: FutureBuilder<ArticleResponse>(
-            future: futureArticle,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(child: CircularProgressIndicator());
-              } else if (snapshot.hasError) {
-                return Center(child: Text('Error: ${snapshot.error}'));
-              } 
-              else if (!snapshot.hasData) {
-                return const Center(child: Text('No news available'));
-              } else {
-                Article article = snapshot.data!.news;
-                // List<Comment> comments = snapshot.data!.comments;
-                // bool bookmarked = snapshot.data!.bookmarked;
+          future: futureArticle,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            } else if (snapshot.hasError) {
+              return Center(child: Text('Error: ${snapshot.error}'));
+            } else if (!snapshot.hasData) {
+              return const Center(child: Text('No news available'));
+            } else {
+              Article article = snapshot.data!.news;
+              // List<Comment> comments = snapshot.data!.comments;
+              bool bookmarked = snapshot.data!.bookmarked;
 
-                return Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Image(
-                      image: NetworkImageWithRetry(
-                          "${BaseAPI.url}storage/${article.image}"),
-                      width: double.infinity,
-                      height: 200,
-                      fit: BoxFit.cover,
-                    ),
-                    const SizedBox(height: 20),
-                    Text(
-                      article.title,
-                      style: const TextStyle(fontSize: 24),
-                    ),
-                    const SizedBox(height: 10),
-                    Text(
-                      'Published on: ${article.createdAt.toString()}',
-                      style: const TextStyle(color: Colors.grey),
-                    ),
-                    const SizedBox(height: 20),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16.0,
-                        vertical: 8.0,
-                      ),
-                      child: HtmlWidget(
-                        article.content,
-                      ),
-                    ),
-                  ],
-                );
+              void handleBookmark() async {
+                if (bookmarked) {
+                  await NewsAPI().unbookmarkNews(widget.news.slug);
+                } else {
+                  await NewsAPI().bookmarkNews(widget.news.slug);
+                }
+
+                setState(() {
+                  futureArticle = NewsAPI().fetchNewsBySlug(widget.news.slug);
+                });
               }
-            },
-          ),
+
+              return Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Image.network(
+                    "${BaseAPI.url}storage/${article.image}",
+                    width: double.infinity,
+                    height: 200,
+                    fit: BoxFit.cover,
+                  ),
+                  const SizedBox(height: 20),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          article.title,
+                          style: const TextStyle(fontSize: 24),
+                        ),
+                        ElevatedButton(
+                          onPressed: handleBookmark,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor:
+                                bookmarked ? Colors.blueGrey : Colors.blue,
+                            foregroundColor: Colors.white,
+                          ),
+                          child: bookmarked
+                              ? const Text('Unbookmark')
+                              : const Text('Bookmark'),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  Text(
+                    'Published on: ${article.createdAt.toString()}',
+                    style: const TextStyle(color: Colors.grey),
+                  ),
+                  const SizedBox(height: 20),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16.0,
+                      vertical: 8.0,
+                    ),
+                    child: HtmlWidget(
+                      article.content,
+                    ),
+                  ),
+                ],
+              );
+            }
+          },
+        ),
       ),
     );
   }
