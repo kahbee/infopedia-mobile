@@ -41,7 +41,7 @@ class AuthAPI extends BaseAPI {
   Future<http.Response> logout(int id, String token) async {
     return await http.delete(
       Uri.parse('${super.baseUrl}/logout'),
-      headers: super.headersWithToken(),
+      headers: await super.headersWithToken(),
     );
   }
 }
