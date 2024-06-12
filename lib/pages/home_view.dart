@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_image/flutter_image.dart';
-import 'package:infopediaflutter/api/base_api.dart';
-import 'package:infopediaflutter/pages/article_detail_view.dart';
 import 'package:infopediaflutter/models/news.dart';
 import 'package:infopediaflutter/api/news_api.dart';
 import 'package:infopediaflutter/pages/bookmark_view.dart';

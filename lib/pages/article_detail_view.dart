@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:infopediaflutter/api/article_response.dart';
 import 'package:infopediaflutter/models/article.dart';
 import 'package:infopediaflutter/models/news.dart';
@@ -7,6 +6,7 @@ import 'package:infopediaflutter/api/base_api.dart';
 import 'package:infopediaflutter/api/news_api.dart';
 
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class ArticleDetailPage extends StatefulWidget {
   final News news;
@@ -75,11 +75,15 @@ class _ArticleDetailPageState extends State<ArticleDetailPage> {
                 return Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    Image.network(
-                      "${BaseAPI.url}storage/${article.image}",
+                    CachedNetworkImage(
+                      imageUrl: "${BaseAPI.url}storage/${article.image}",
                       width: double.infinity,
                       height: 200,
                       fit: BoxFit.cover,
+                      placeholder: (context, url) =>
+                          const CircularProgressIndicator(),
+                      errorWidget: (context, url, error) =>
+                          const Icon(Icons.error),
                     ),
                     const SizedBox(height: 10),
                     Text(

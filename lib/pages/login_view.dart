@@ -58,8 +58,6 @@ class _FormLoginState extends State<FormLogin> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
-  final AuthAPI _authAPI = AuthAPI();
-
   Future<void> _login() async {
     if (!_formKey.currentState!.validate()) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -71,7 +69,7 @@ class _FormLoginState extends State<FormLogin> {
     setState(() => _isLoading = true);
 
     try {
-      var res = await _authAPI.login(
+      var res = await AuthAPI().login(
         _emailController.text,
         _passwordController.text,
       );
