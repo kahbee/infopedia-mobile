@@ -1,4 +1,11 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:infopediaflutter/api/auth_api.dart';
+import 'package:infopediaflutter/api/base_response.dart';
+import 'package:infopediaflutter/api/login_response.dart';
+
+import '../api/sp.dart';
 
 class RegisterPage extends StatelessWidget {
   const RegisterPage({super.key});
@@ -47,12 +54,64 @@ class FormRegister extends StatefulWidget {
 class _FormRegisterState extends State<FormRegister> {
   final _formKey = GlobalKey<FormState>();
   bool _obscureText = true;
-  final bool _isLoading = false;
+  bool _isLoading = false;
 
   final TextEditingController _namaController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _cPasswordController = TextEditingController();
+
+  Future<void> _register() async {
+    if (!_formKey.currentState!.validate()) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please fill input')),
+      );
+      return;
+    }
+
+    setState(() => _isLoading = true);
+
+    try {
+      var res = await AuthAPI().register(
+        _namaController.text,
+        _emailController.text,
+        _passwordController.text,
+        _cPasswordController.text,
+      );
+      var body = jsonDecode(res.body);
+
+      var parsed = BaseResponse.fromJson(body);
+      if (res.statusCode == 201 && parsed.success) {
+        var data = LoginResponse.fromJson(parsed.data);
+        setToken(data.token);
+        if (mounted) {
+          Navigator.of(context, rootNavigator: true)
+              .pushReplacementNamed('/home');
+        }
+      } else {
+        Map<String, dynamic> data = parsed.data;
+        if (mounted) {
+          try {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(data.values.first.first)),
+            );
+          } catch (e) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(parsed.message)),
+            );
+          }
+        }
+      }
+      setState(() => _isLoading = false);
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(e.toString())),
+        );
+      }
+      setState(() => _isLoading = false);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -170,7 +229,11 @@ class _FormRegisterState extends State<FormRegister> {
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: _isLoading ? null : () {},
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blue,
+                    foregroundColor: Colors.white,
+                  ),
+                  onPressed: _isLoading ? null : _register,
                   child: _isLoading
                       ? const SizedBox(
                           height: 16,

@@ -11,12 +11,10 @@ class AuthAPI extends BaseAPI {
     String passwordConfirmation,
   ) async {
     var body = jsonEncode({
-      'customer': {
-        'name': name,
-        'email': email,
-        'password': password,
-        'password_confirmation': passwordConfirmation
-      }
+      'name': name,
+      'email': email,
+      'password': password,
+      'password_confirmation': passwordConfirmation
     });
     return await http.post(
       Uri.parse('${super.baseUrl}/register'),

@@ -80,7 +80,8 @@ class _FormLoginState extends State<FormLogin> {
         var data = LoginResponse.fromJson(parsed.data);
         setToken(data.token);
         if (mounted) {
-          Navigator.of(context).pushReplacementNamed('/home');
+          Navigator.of(context, rootNavigator: true)
+              .pushReplacementNamed('/home');
         }
       } else {
         if (mounted) {
@@ -176,6 +177,10 @@ class _FormLoginState extends State<FormLogin> {
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blue,
+                    foregroundColor: Colors.white,
+                  ),
                   onPressed: _isLoading ? null : _login,
                   child: _isLoading
                       ? const SizedBox(
