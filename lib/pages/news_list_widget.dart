@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:infopediaflutter/api/base_api.dart';
 import 'package:infopediaflutter/models/news.dart';
 import 'package:infopediaflutter/pages/article_detail_view.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class NewsListWidget extends StatelessWidget {
   const NewsListWidget({
@@ -42,11 +43,15 @@ class NewsListWidget extends StatelessWidget {
                   ),
                   child: Column(
                     children: [
-                      Image.network(
-                        "${BaseAPI.url}storage/${news.image}",
+                      CachedNetworkImage(
+                        imageUrl: "${BaseAPI.url}storage/${news.image}",
                         width: double.infinity,
                         height: 200,
                         fit: BoxFit.cover,
+                        placeholder: (context, url) =>
+                            const CircularProgressIndicator(),
+                        errorWidget: (context, url, error) =>
+                            const Icon(Icons.error),
                       ),
                       Text(news.title)
                     ],

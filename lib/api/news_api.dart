@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:infopediaflutter/api/article_response.dart';
 import 'package:infopediaflutter/api/base_response.dart';
-import 'package:infopediaflutter/models/article.dart';
 import 'package:infopediaflutter/models/news.dart';
 import 'package:infopediaflutter/api/base_api.dart';
 

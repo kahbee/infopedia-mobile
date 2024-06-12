@@ -4,7 +4,7 @@ import 'package:infopediaflutter/api/news_api.dart';
 import 'package:infopediaflutter/pages/news_list_widget.dart';
 
 class SearchView extends StatefulWidget {
-  const SearchView({Key? key}) : super(key: key);
+  const SearchView({super.key});
 
   @override
   State<SearchView> createState() => _SearchViewState();
