@@ -69,7 +69,6 @@ class User {
   final int id;
   final String name;
   final String email;
-  final DateTime emailVerifiedAt;
   final DateTime createdAt;
   final DateTime updatedAt;
   final bool isAdmin;
@@ -78,7 +77,6 @@ class User {
     required this.id,
     required this.name,
     required this.email,
-    required this.emailVerifiedAt,
     required this.createdAt,
     required this.updatedAt,
     required this.isAdmin,
@@ -89,7 +87,6 @@ class User {
       id: json['id'],
       name: json['name'],
       email: json['email'],
-      emailVerifiedAt: DateTime.parse(json['email_verified_at']),
       createdAt: DateTime.parse(json['created_at']),
       updatedAt: DateTime.parse(json['updated_at']),
       isAdmin: json['is_admin'] == 1,
